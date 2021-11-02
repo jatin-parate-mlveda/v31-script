@@ -116,7 +116,7 @@ export const getBalanceNetPaymentAndRefunds = async (order, shopName) => {
       stack: err.stack,
       shopName,
       orderId: order.orderId,
-      gqlRes,
+      res: gqlRes && gqlRes.response,
     });
     throw err;
   }
