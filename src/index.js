@@ -11,19 +11,32 @@ const fn = async () => {
   try {
     for await (const order of Order.find({ storeName: /teckie-supplies-2/ })) {
       try {
-        await getBalanceNetPaymentAndRefunds(
+        Object.assign(
           order.order.order,
-          order.storeName,
+          await getBalanceNetPaymentAndRefunds(
+            order.order.order,
+            order.storeName,
+          ),
         );
+        await order.save().catch(err => {
+          logger.error(`Error in saving order: ${err.message}`, {
+            storeName: order.storeName,
+            _id: order._id,
+            orderId: order.order.order.id,
+            stack: err.stack,
+          });
+
+          throw err;
+        });
         i += 1;
-        console.log(`Done: ${i}`);
+        logger.info(`Done: ${i}`);
       } catch (err) {
         logger.error(`Got Error in index.js:14: ${err.message}`, {
           stack: err.stack,
           orderId: order.customOrderNumber,
         });
         totalErrors += 1;
-        console.log(`Error: ${totalErrors}`);
+        logger.info(`Error: ${totalErrors}`);
       }
     }
   } catch (err) {
@@ -32,7 +45,7 @@ const fn = async () => {
     });
   }
 
-  console.log(`Done: ${i}, totalErrors: ${totalErrors}`);
+  logger.info(`Done: ${i}, totalErrors: ${totalErrors}`);
 };
 
 fn();
