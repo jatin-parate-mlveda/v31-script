@@ -34,6 +34,7 @@ const fn = async () => {
         logger.error(`Got Error in index.js:14: ${err.message}`, {
           stack: err.stack,
           orderId: order.customOrderNumber,
+          storeName: order.storeName,
         });
         totalErrors += 1;
         logger.info(`Error: ${totalErrors}`);
