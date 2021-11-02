@@ -54,6 +54,11 @@ export const getBalanceNetPaymentAndRefunds = async (order, shopName) => {
       },
     );
 
+    if (!gqlRes.data.data.order) {
+      // noinspection ExceptionCaughtLocallyJS
+      throw Error('Order not found');
+    }
+
     const { transactions, currentTotalPriceSet } = gqlRes.data.data.order;
     const totalPaidTransactions = transactions.filter(
       ({ kind, status }) =>
