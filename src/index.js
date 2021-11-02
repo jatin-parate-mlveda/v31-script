@@ -9,7 +9,7 @@ const fn = async () => {
   let i = 0;
   let totalErrors = 0;
   try {
-    for await (const order of Order.find({ storeName: /teckie-supplies-2/ })) {
+    for await (const order of Order.find({})) {
       try {
         Object.assign(
           order.order.order,
