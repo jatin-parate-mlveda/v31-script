@@ -3,9 +3,12 @@ import Orders from './order/orderModel';
 
 export const updateOrderMailSentAt = async () => {
   try {
-    for await (const order of Orders.find().select({
-      'order.order.created_at': 1,
-    })) {
+    for await (const order of Orders.find()
+      .select({
+        _id: 1,
+        'order.order.created_at': 1,
+      })
+      .lean()) {
       try {
         await Orders.updateOne(
           { _id: order._id },

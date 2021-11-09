@@ -31,8 +31,12 @@ const fn = async () => {
   }
 };
 
-fn().catch(err => {
-  logger.error(`Uknown error in ${fn.name} call: ${err.message}`, {
-    stack: err.stack,
+fn()
+  .catch(err => {
+    logger.error(`Uknown error in ${fn.name} call: ${err.message}`, {
+      stack: err.stack,
+    });
+  })
+  .finally(() => {
+    process.exit();
   });
-});
