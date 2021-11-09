@@ -3,10 +3,21 @@ import { connectToDb } from './global/connect-to-db';
 import { updateOrderBalance } from './updateOrderBalance';
 import logger from './global/logger';
 import { updateOrderMailSentAt } from './updateOrderMailSentAt';
+import { updateAllSettings } from './updateAllSettings';
 
 const fn = async () => {
   try {
     await connectToDb();
+
+    await updateAllSettings().catch(err => {
+      logger.error(
+        `Unknown error in ${updateAllSettings.name} call: ${err.message}`,
+        {
+          stack: err.stack,
+        },
+      );
+      // not throwing error because we wanto to continue next process
+    });
 
     await updateOrderMailSentAt().catch(err => {
       logger.error(

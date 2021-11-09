@@ -10,6 +10,7 @@ export const connectToDb = async () => {
     await connect(DB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useCreateIndex: true,
     });
     logger.info('Connected To DB');
   } catch (err) {
