@@ -57,6 +57,11 @@ const OrderSchema = new Schema({
     required: false,
     default: null,
   },
+  firstTimeMailSentOn: {
+    type: Date,
+    required: false,
+    default: null,
+  },
 });
 
 export default mongoose.model('orders', OrderSchema);

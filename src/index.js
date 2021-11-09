@@ -1,52 +1,38 @@
 import './global/setup-env';
 import { connectToDb } from './global/connect-to-db';
-import Order from './order/orderModel';
+import { updateOrderBalance } from './updateOrderBalance';
 import logger from './global/logger';
-import { getBalanceNetPaymentAndRefunds } from './order/orderService';
+import { updateOrderMailSentAt } from './updateOrderMailSentAt';
 
 const fn = async () => {
-  await connectToDb();
-  let i = 0;
-  let totalErrors = 0;
   try {
-    for await (const order of Order.find({})) {
-      try {
-        Object.assign(
-          order.order.order,
-          await getBalanceNetPaymentAndRefunds(
-            order.order.order,
-            order.storeName,
-          ),
-        );
-        await order.save().catch(err => {
-          logger.error(`Error in saving order: ${err.message}`, {
-            storeName: order.storeName,
-            _id: order._id,
-            orderId: order.order.order.id,
-            stack: err.stack,
-          });
+    await connectToDb();
 
-          throw err;
-        });
-        i += 1;
-        logger.info(`Done: ${i}`);
-      } catch (err) {
-        logger.error(`Got Error in index.js:14: ${err.message}`, {
+    await updateOrderMailSentAt().catch(err => {
+      logger.error(
+        `Unknown error in ${updateOrderMailSentAt.name} call: ${err.message}`,
+        {
           stack: err.stack,
-          orderId: order.customOrderNumber,
-          storeName: order.storeName,
-        });
-        totalErrors += 1;
-        logger.info(`Error: ${totalErrors}`);
-      }
-    }
+        },
+      );
+      // not throwing error because we wanto to continue next process
+    });
+
+    await updateOrderBalance().catch(err => {
+      logger.error(`Unknown error in updateOrderBalance call: ${err.message}`, {
+        stack: err.stack,
+      });
+      // not throwing an error here because we want to continue next process
+    });
   } catch (err) {
-    logger.error(`Got Error in index.js:21: ${err.message}`, {
+    logger.error(`Error in ${fn.name}: ${err.message}`, {
       stack: err.stack,
     });
   }
-
-  logger.info(`Done: ${i}, totalErrors: ${totalErrors}`);
 };
 
-fn();
+fn().catch(err => {
+  logger.error(`Uknown error in ${fn.name} call: ${err.message}`, {
+    stack: err.stack,
+  });
+});
