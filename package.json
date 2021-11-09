@@ -1,14 +1,12 @@
 {
-  "name": "backend-static-testing-setup",
+  "name": "v31-scripts",
   "version": "1.0.0",
-  "description": "Static testing like eslint, prettier etc.",
+  "description": "Scripts for invoice hero v31",
   "scripts": {
     "build": "rm -rf ./dist && babel src --out-dir dist --ignore **/*.test.js",
     "lint": "eslint --ignore-path .gitignore .",
     "prettier": "prettier --ignore-path .gitignore --write \"src**/*.+(js|json)\"",
     "format": "npm run lint -- --fix",
-    "validate": "npm run lint && npm run testAndValidateBuild",
-    "testAndValidateBuild": "npm run build",
     "start": "npm run build && node ./dist/index.js",
     "start:prod": "NODE_ENV=production npm run start",
     "start:local": "nodemon --config .nodemonrc.json"
