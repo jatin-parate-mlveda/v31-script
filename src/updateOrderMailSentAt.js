@@ -10,7 +10,7 @@ export const updateOrderMailSentAt = async () => {
         await Orders.updateOne(
           { _id: order._id },
           {
-            firstTimeMailSentOn: new Date(order.order.created_at),
+            firstTimeMailSentOn: new Date(order.order.order.created_at),
           },
         );
       } catch (err) {

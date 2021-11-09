@@ -56,7 +56,7 @@ export const getBalanceNetPaymentAndRefunds = async (order, shopName) => {
 
     if (!gqlRes.data.data.order) {
       // noinspection ExceptionCaughtLocallyJS
-      throw Error('Order not found');
+      throw Error(`Order with id ${order.id} not found`);
     }
 
     const { transactions, currentTotalPriceSet } = gqlRes.data.data.order;
@@ -120,7 +120,7 @@ export const getBalanceNetPaymentAndRefunds = async (order, shopName) => {
     logger.error(`Error in getBalanceNetPaymentAndRefunds: ${err.message}`, {
       stack: err.stack,
       shopName,
-      orderId: order.orderId,
+      orderId: order.id,
       res: gqlRes && gqlRes.response,
     });
     throw err;
