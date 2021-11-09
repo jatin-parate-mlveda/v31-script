@@ -1,5 +1,0 @@
-{
-  "testEnvironment": "node",
-  "coveragePathIgnorePatterns": ["/node_modules/"],
-  "setupFiles": ["./test/setup.js"]
-}
